@@ -1,0 +1,76 @@
+<model>
+    <mount>//OPNsense/bind/dns64</mount>
+    <description>BIND DNS64 configuration</description>
+    <version>1.0.0</version>
+    <items>
+        <dns64configs>
+            <dns64 type="ArrayField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type="TextField">
+                    <Default>RFC 6052</Default>
+                    <Required>N</Required>
+                </name>
+                <netprefix type="NetworkField">
+                    <Required>Y</Required>
+                    <Default>64:ff9b::/96</Default>
+                    <AddressFamily>ipv6</AddressFamily>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <Strict>Y</Strict>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>This network prefix already exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </netprefix>
+                <clients type="ModelRelationField">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Bind.Acl</source>
+                            <items>acls.acl</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </clients>
+                <mapped type="ModelRelationField">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Bind.Acl</source>
+                            <items>acls.acl</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>N</Required>
+                </mapped>
+                <norfc1918 type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </norfc1918>
+                <exclude type="ModelRelationField">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Bind.Acl</source>
+                            <items>acls.acl</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>N</Required>
+                </exclude>
+                <recursiveonly type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </recursiveonly>
+                <breakdnssec type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </breakdnssec>
+            </dns64>
+        </dns64configs>
+    </items>
+</model>

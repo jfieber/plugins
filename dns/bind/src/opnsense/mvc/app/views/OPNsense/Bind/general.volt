@@ -31,6 +31,7 @@
     <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
     <li><a data-toggle="tab" href="#dnsbl">{{ lang._('DNSBL') }}</a></li>
     <li><a data-toggle="tab" href="#acls">{{ lang._('ACLs') }}</a></li>
+    <li><a data-toggle="tab" href="#dns64">{{ lang._('DNS64') }}</a></li>
     <li><a data-toggle="tab" href="#primary-domains">{{ lang._('Primary Zones') }}</a></li>
     <li><a data-toggle="tab" href="#secondary-domains">{{ lang._('Secondary Zones') }}</a></li>
 </ul>
@@ -80,6 +81,38 @@
         <div class="col-md-12">
             <hr />
             <button class="btn btn-primary" id="saveAct_acl" type="button"><b>{{ lang._('Save') }}</b> <i id="saveAct_acl_progress"></i></button>
+            <br /><br />
+        </div>
+    </div>
+    <div id="dns64" class="tab-pane fade in">
+        <div id="dns64-area" class="table-responsive">
+            <table id="grid-dns64" class="table table-condensed table-hover table-striped" data-editDialog="dialogEditBindDns64">
+                <thead>
+                    <tr>
+                        <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                        <th data-column-id="name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
+                        <th data-column-id="netprefix" data-type="string" data-visible="true">{{ lang._('Network Prefix') }}</th>
+                        <th data-column-id="clients" data-type="string" data-visible="true" data-css-class="long-str">{{ lang._('Clients') }}</th>
+                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td>
+                            <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                            <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <hr />
+            <button class="btn btn-primary" id="saveAct_dns64" type="button"><b>{{ lang._('Save') }}</b> <i id="saveAct_dns64_progress"></i></button>
             <br /><br />
         </div>
     </div>
@@ -192,6 +225,7 @@
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBindAcl,'id':'dialogEditBindAcl','label':lang._('Edit ACL')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditBindDns64,'id':'dialogEditBindDns64','label':lang._('Edit DNS64')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBindPrimaryDomain,'id':'dialogEditBindPrimaryDomain','label':lang._('Edit Primary Zone')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBindSecondaryDomain,'id':'dialogEditBindSecondaryDomain','label':lang._('Edit Secondary Zone')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditBindRecord,'id':'dialogEditBindRecord','label':lang._('Edit Record')])}}
@@ -362,6 +396,15 @@ $(document).ready(function() {
         'toggle': '/api/bind/acl/toggleAcl/'
     });
 
+    $("#grid-dns64").UIBootgrid({
+        'search': '/api/bind/dns64/searchDns64',
+        'get': '/api/bind/dns64/getDns64/',
+        'set': '/api/bind/dns64/setDns64/',
+        'add': '/api/bind/dns64/addDns64/',
+        'del': '/api/bind/dns64/delDns64/',
+        'toggle': '/api/bind/dns64/toggleDns64/'
+    });
+
     $("#grid-primary-domains").UIBootgrid({
         'search': '/api/bind/domain/searchPrimaryDomain',
         'get': '/api/bind/domain/getDomain/',
@@ -488,6 +531,16 @@ $(document).ready(function() {
             ajaxCall(url = "/api/bind/service/reconfigure", sendData = {}, callback = function(data, status) {
                 updateServiceControlUI('bind');
                 $("#saveAct_acl_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
+    });
+
+    $("#saveAct_dns64").click(function() {
+        saveFormToEndpoint(url = "/api/bind/dns64/set", formid = 'frm_general_settings', callback_ok = function() {
+            $("#saveAct_dns64_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url = "/api/bind/service/reconfigure", sendData = {}, callback = function(data, status) {
+                updateServiceControlUI('bind');
+                $("#saveAct_dns64_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
     });

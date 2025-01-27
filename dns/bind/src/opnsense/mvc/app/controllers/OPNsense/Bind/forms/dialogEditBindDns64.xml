@@ -1,0 +1,56 @@
+<form>
+    <field>
+        <id>dns64.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>This will enable or disable this DNS64 configuration.</help>
+    </field>
+    <field>
+        <id>dns64.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Optional descriptive name for this configuration.</help>
+    </field>
+    <field>
+        <id>dns64.netprefix</id>
+        <label>DNS64 Prefix</label>
+        <type>text</type>
+        <help>Specify the IPv6 prefix providing NAT64 service. Synthesized AAAA records will use this prefix. Compatible IPv6 prefixes have lengths of 32, 40, 48, 56, 64, and 96, per RFC 6052. Bits 64..71 inclusive must be zero, with the most significant bit of the prefix in position 0.</help>
+    </field>
+    <field>
+        <id>dns64.clients</id>
+        <label>Clients</label>
+        <type>select_multiple</type>
+        <help>An ACL defining addresses of clients affected by this configuration. If unspecified, AAAA synthesis is provided for all IPv6 clients.</help>
+    </field>
+    <field>
+        <id>dns64.mapped</id>
+        <label>Mapped v4 Addresses</label>
+        <type>select_multiple</type>
+        <help>An ACL defining IPv4 addresses which will be mapped to AAAA records. If unspecified, all IPv4 addresses are subject to mapping.</help>
+    </field>
+    <field>
+        <id>dns64.norfc1918</id>
+        <label>Exclude RFC 1918</label>
+        <type>checkbox</type>
+        <help>Exclude RFC 1918 IPv4 addresses from being mapped to AAAA records. This should be enabled When using DNS64 with the well-known prefix of 64:ff9b::/96 or a public NAT64 service. If the ACL specified for Mapped v4 addresses already excludes RFC 1918 address, this is option redundant.</help>
+    </field>
+    <field>
+        <id>dns64.exclude</id>
+        <label>Excluded v6 Addresses</label>
+        <type>select_multiple</type>
+        <help>Normally, DNS64 does not apply to a domain name that owns one or more AAAA records; these records are simply returned. The optional exclude ACL allows specification of a list of IPv6 addresses that are ignored if they appear in a domain name’s AAAA records; DNS64 is applied to any A records the domain name owns. If not defined, exclude defaults to ::ffff:0.0.0.0/96.</help>
+    </field>
+    <field>
+        <id>dns64.recursiveonly</id>
+        <label>Recursive Only</label>
+        <type>checkbox</type>
+        <help>If enabled, the DNS64 synthesis only happens for recursive queries.</help>
+    </field>
+    <field>
+        <id>dns64.breakdnssec</id>
+        <label>Break DNSSEC</label>
+        <type>checkbox</type>
+        <help>If enabled, the DNS64 synthesis happens even if the result, if validated, would cause a DNSSEC validation failure. If this option is set to disabled (the default), the DO is set on the incoming query, and there are RRSIGs on the applicable records, then synthesis does not happen.</help>
+    </field>
+</form>
